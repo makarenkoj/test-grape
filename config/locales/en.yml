@@ -1,0 +1,28 @@
+en:
+  hello: "Hello world"
+  errors:
+    access_denied: Access denied
+    forbidden: Access forbidden
+    not_found: Not found
+    not_authenticated: Invalid token
+    not_authorized: You are not authorized to perform this action
+    something_went_wrong: Something went wrong
+    jwt:
+      token_expired: 'token has been expired'
+      token_invalid: 'token is invalid'
+    user:
+      attributes:
+        username:
+          taken: 'Username has already been taken. Please choose another one'
+        role: "%{value} is not a valid"
+        password: 'Password complexity requirement not met. Length should be 10-32 characters and include: 1 uppercase, 1 lowercase, 1 digit'
+        email:
+          invalid: 'Invalid email'
+          taken: 'User with this email already exists'
+    accommodation:
+      attributes:
+        type: "%{value} is not a valid"
+    date:
+      today: Can't be less than today
+      end_date: end_date cannot be less than the start date
+      start_date: Start date cannot be greater than the end date
