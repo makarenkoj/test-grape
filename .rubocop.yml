@@ -1,0 +1,7 @@
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
