@@ -5,3 +5,12 @@ Metrics/AbcSize:
   Exclude:
     - 'bin/**/*'
     - 'db/**/*'
+
+Metrics/BlockLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/BlockComments:
+  Enabled: false

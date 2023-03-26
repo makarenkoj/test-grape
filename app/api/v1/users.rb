@@ -4,6 +4,15 @@ module V1
     include AuthenticateRequest
     format :json
 
+    # helpers SharedParams
+    helpers do
+      include Pagy::Backend
+      params :pagination do
+        optional :page, type: Integer, desc: 'Pagination page'
+        optional :per_page, type: Integer, desc: 'Entries per page'
+      end
+    end
+
     resource :users do
       namespace do
         desc 'Create new user', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:post]
@@ -31,12 +40,15 @@ module V1
 
           desc 'Get users', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
           params do
-            # use :pagination
+            use :pagination
           end
           get do
-            users = User.all#, :index?
-            users = users.order(:username)
-
+            users = User.all
+            pagy, users = pagy(users.order(:username),
+            page: params[:page], items: params[:per_page]
+          )
+  
+            present meta: {total_pages: pagy.pages, current_page: pagy.page, users_count: pagy.count}
             present users, with: Entities::Users::Index::User
           end
 
@@ -45,7 +57,7 @@ module V1
             requires :id, type: String, desc: 'User id'
           end
           get ':id' do
-            user = User.find(params[:id])#, :show?
+            user = User.find(params[:id])
 
             if user == current_user
               present user, with: Entities::Users::Show::User
@@ -63,7 +75,7 @@ module V1
             optional :password, type: String, desc: 'User password'
           end
           put ':id' do
-            user = User.find(params[:id])#, :update?
+            user = User.find(params[:id])
 
             if user == current_user
               user.update!(params)
@@ -79,7 +91,7 @@ module V1
             requires :id, type: String, desc: 'User id'
           end
           delete ':id' do
-            user = User.find(params[:id])#, :destroy?
+            user = User.find(params[:id])
 
             if user == current_user
               user.destroy
