@@ -1,99 +1,127 @@
 require 'rails_helper'
+require 'support/shared_contexts/base'
 
-describe V1::Users do
-  let(:current_user) { create(:user) }
-  let(:current_user_token) { create(:user_token, user: current_user) }
-  let(:headers) { {'Authorization' => current_user_token.token} }
+describe V1::Countries do
+  include_context 'base'
 
-  # describe 'GET /users' do
-  #   context 'no params' do
-  #     let(:users) { create_list :user, 3 }
+  describe 'GET /countries' do
+    context 'get countries' do
+      let(:countries) { create_list :country, 5 }
 
-  #     before do
-  #       @collection_ids = users.pluck(:id)
+      before do
+        countries
+        get '/countries', headers: headers
+      end
 
-  #       get '/users', headers: headers
-  #     end
+      it 'returns the proper attributes' do
+        json = JSON.parse(response.body)
 
-  #     it 'returns the proper attributes' do
-  #       json = JSON.parse(response.body)
+        expect(response.status).to eql 200
+        expect(json['countries'].size).to eql 5
+        json['countries'].last do |country|
+          expect(country['id']).to be_a Integer
+          expect(country['name']).to be_a String
+          expect(country['created_at']).to be_a String
+          expect(country['updated_at']).to be_a String
+        end
+      end
+    end
 
-  #       expect(response.status).to eql 200
-  #       json['users'].last do |user|
-  #         expect(user['id']).to be_a Integer
-  #         expect(user['email']).to be_a String
-  #         expect(user['username']).to be_a String
-  #         expect(user['role']).to be_a String
-  #         expect(user['created_at']).to be_a String
-  #         expect(user['updated_at']).to be_a String
-  #       end
-  #     end
-  #   end
+    context 'if user not authorization' do
+      let(:countries) { create_list :country, 5 }
 
-  #   context 'default sorting' do
-  #     let(:user_1) { create :user }
-  #     let(:user_2) { create :user }
-  #     let(:user_3) { create :user }
+      before do
+        countries
+        get '/countries', headers: nil
+      end
 
-  #     before do
-  #       current_user.update_column(:username, 'Esteban')
-  #       user_1.update_column(:username, 'Brian')
-  #       user_2.update_column(:username, 'Abigail')
-  #       user_3.update_column(:username, 'Christina')
+      it 'returns the proper attributes' do
+        json = JSON.parse(response.body)
 
-  #       get '/users', headers: headers, params: {}
-  #     end
+        expect(response.status).to eql 200
+        expect(json['countries'].size).to eql 5
+        json['countries'].last do |country|
+          expect(country['id']).to be_a Integer
+          expect(country['name']).to be_a String
+          expect(country['created_at']).to be_a String
+          expect(country['updated_at']).to be_a String
+        end
+      end
+    end
 
-  #     it 'returns ordered users' do
-  #       json = JSON.parse(response.body)
+    context 'default sorting' do
+      let(:country_1) { create :country, name: 'monaco' }
+      let(:country_2) { create :country, name: 'australia'  }
+      let(:country_3) { create :country, name: 'italy'  }
 
-  #       expect(response.status).to eql 200
-  #       expect(json['users'].pluck('username')).to eq %w[Abigail Brian Christina Esteban]
-  #     end
-  #   end
-  # end
+      before do
+        country_1
+        country_2
+        country_3
 
-  # describe 'GET /users/:id' do
-  #   context 'get user' do
-  #     it 'get current_user' do
-  #       get "/users/#{current_user.id}", headers: headers
+        get '/countries', headers: headers, params: {}
+      end
 
-  #       json = JSON.parse(response.body)
+      it 'returns ordered countries' do
+        json = JSON.parse(response.body)
 
-  #       expect(response.status).to eql 200
-  #       expect(json['user']['id']).to eql current_user.id
-  #       expect(json['user']['email']).to eql current_user.email
-  #       expect(json['user']['username']).to eql current_user.username
-  #       expect(json['user']['role']).to eql current_user.role
-  #     end
+        expect(response.status).to eql 200
+        expect(json['countries'].pluck('name')).to eq %w[australia italy monaco]
+      end
+    end
 
-  #     it 'get another user' do
-  #       user = create :user
+    context 'check pagination' do
+      let(:countries) { create_list :country, 15 }
 
-  #       get "/users/#{user.id}", headers: headers
+      before do
+        countries
+        get '/countries', params: {page: 2, per_page: 10}, headers: headers
+      end
 
-  #       json = JSON.parse(response.body)
+      it 'returns the proper attributes' do
+        json = JSON.parse(response.body)
 
-  #       expect(response.status).to eql 403
-  #       expect(json['error']).to eql I18n.t('errors.access_denied')
-  #     end
+        expect(response.status).to eql 200
+        expect(json['countries'].size).to eql 5
+        expect(json['meta']['total_pages']).to eql 2
+        expect(json['meta']['current_page']).to eql 2
+        expect(json['meta']['country_count']).to eql 15
+      end
+    end
+  end
 
-  #     it 'not authenticated user' do
-  #       get "/users/#{current_user.id}", headers: nil
+  describe 'GET /countries/:id' do
+    context 'get country' do
+      it 'get country' do
+        country = create(:country, :with_city)
+        get "/countries/#{country.id}", headers: headers
 
-  #       json = JSON.parse(response.body)
+        json = JSON.parse(response.body)
 
-  #       expect(response.status).to eql 401
-  #       expect(json['error']).to eql I18n.t('errors.not_authenticated')
-  #     end
-  #   end
-  # end
+        expect(response.status).to eql 200
+        expect(json['country']['id']).to eql country.id
+        expect(json['country']['name']).to eql country.name
+        expect(json['country']['cities'].size).to eql 5
+      end
+
+      it 'if user not authorization' do
+        country = create(:country)
+        get "/countries/#{country.id}", headers: nil
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 200
+        expect(json['country']['id']).to eql country.id
+        expect(json['country']['name']).to eql country.name
+      end
+    end
+  end
 
   describe 'POST /countries' do
     context 'success' do
       it 'create country' do
         body = { name: 'ukraine' }
-        post '/countries', params: body, headers: headers
+        post '/countries', params: body, headers: admin_headers
 
         json = JSON.parse(response.body)
 
@@ -115,92 +143,17 @@ describe V1::Users do
         expect(response.status).to eql 401
         expect(json['error']).to eql I18n.t('errors.not_authenticated')
       end
+
+      it 'create country if customer user' do
+        body = { name: 'ukraine' }
+        post '/countries', params: body, headers: headers
+
+        json = JSON.parse(response.body)
+
+        expect(Country.all.size).to eq(0)
+        expect(response.status).to eql 403
+        expect(json['error']).to eql I18n.t('errors.access_denied')
+      end
     end
   end
-
-  # describe 'PUT /users/:id' do
-  #   context 'success' do
-  #     it 'update user' do
-  #       body = {email: 'new@test.com', username: 'newname'}
-
-  #       put "/users/#{current_user.id}", params: body, headers: headers
-
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 200
-  #       expect(json['email']).to eql body[:email]
-  #       expect(json['username']).to eql body[:username]
-  #       expect(json['role']).to eql current_user.role
-  #     end
-
-  #     it 'update password user' do
-  #       body = {password: '123Password!'}
-
-  #       put "/users/#{current_user.id}", params: body, headers: headers
-
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 200
-  #       expect(json['email']).to eql current_user.email
-  #       expect(json['username']).to eql current_user.username
-  #       expect(json['role']).to eql current_user.role
-  #     end
-  #   end
-
-  #   context 'failure' do
-  #     it 'user not authorize' do
-  #       body = {email: 'new@test.com', username: 'newname'}
-
-  #       put "/users/#{current_user.id}", params: body, headers: nil
-
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 401
-  #       expect(json['error']).to eql I18n.t('errors.not_authenticated')
-  #     end
-
-  #     it 'update another user' do
-  #       user = create :user
-  #       body = {email: 'new@test.com', username: 'newname'}
-
-  #       put "/users/#{user.id}", params: body, headers: headers
-
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 403
-  #       expect(json['error']).to eql I18n.t('errors.access_denied')
-  #     end
-  #   end
-  # end
-
-  # describe 'DELETE /users/:id' do
-  #   context 'success' do
-  #     it 'delete user' do
-  #       delete "/users/#{current_user.id}", headers: headers
-
-  #       expect(response.status).to eql RESPONSE_CODE[:ok]
-  #       expect(User.find_by(id: current_user.id)).to be_nil
-  #     end
-  #   end
-
-  #   context 'failure' do
-  #     it 'not authenticated user' do
-  #       delete "/users/#{current_user.id}", headers: nil
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 401
-  #       expect(json['error']).to eql I18n.t('errors.not_authenticated')
-  #     end
-
-  #     it 'another user' do
-  #       user = create :user
-
-  #       delete "/users/#{user.id}", headers: headers
-  #       json = JSON.parse(response.body)
-
-  #       expect(response.status).to eql 403
-  #       expect(json['error']).to eql I18n.t('errors.access_denied')
-  #     end
-  #   end
-  # end
 end

@@ -1,10 +1,11 @@
 require 'grape-swagger'
-require 'validators/email'
+# require 'validators/email'
 
 module V1
   class Base < Grape::API
     mount V1::Users
     mount V1::Countries
+    mount V1::Cities
 
     add_swagger_documentation(
       api_version: 'v1',

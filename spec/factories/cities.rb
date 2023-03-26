@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :city do
     association :country, factory: :country
-    name { FFaker::Product.model }
+    sequence(:name) { |n| "#{FFaker::Product.model}#{n + 1}" }
   end
 end

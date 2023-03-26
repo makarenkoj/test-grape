@@ -248,7 +248,3 @@
 
 # When you are done setting your own default freeze it, so it will not get changed accidentally
 Pagy::DEFAULT.freeze
-
-# Pagy::VARS[:page]   = 1
-# Pagy::VARS[:items]  = 20
-# Pagy::VARS[:outset] = 0

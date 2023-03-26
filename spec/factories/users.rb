@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    username { FFaker::Name.first_name }
+    sequence(:username) { |n| "#{FFaker::Name.first_name}#{n + 1}" }
     email { FFaker::Internet.unique.email }
     password { '12345678Qq!' }
     

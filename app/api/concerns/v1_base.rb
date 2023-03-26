@@ -35,40 +35,40 @@ module V1Base
 
   class NotAllowedParams < ArgumentError; end
 
-  # included do
-  #   helpers Pundit
-  #   helpers Helpers::SharedParams
+  included do
+    # helpers Pundit
+    # helpers Helpers::SharedParams
 
-  #   after { verify_authorized }
+    # after { verify_authorized }
 
-  #   format :json
-  #   prefix :api
-  #   default_format :json
+    format :json
+    # prefix :api
+    default_format :json
 
-  #   version 'v1'
+    # version 'v1'
 
-  #   rescue_from V1Base::NotAllowedParams do |e|
-  #     error!(e.message, RESPONSE_CODE[:unprocessable_entity])
-  #   end
+    rescue_from V1Base::NotAllowedParams do |e|
+      error!(e.message, RESPONSE_CODE[:unprocessable_entity])
+    end
 
-  #   rescue_from ActiveRecord::RecordInvalid do |e|
-  #     error!(e.record.errors.messages, RESPONSE_CODE[:unprocessable_entity])
-  #   end
+    rescue_from ActiveRecord::RecordInvalid do |e|
+      error!(e.record.errors.messages, RESPONSE_CODE[:unprocessable_entity])
+    end
 
-  #   rescue_from ActiveRecord::RecordNotUnique do |e|
-  #     error!(e.message, RESPONSE_CODE[:unprocessable_entity])
-  #   end
+    rescue_from ActiveRecord::RecordNotUnique do |e|
+      error!(e.message, RESPONSE_CODE[:unprocessable_entity])
+    end
 
-  #   rescue_from ActiveRecord::RecordNotFound do |e|
-  #     error!(e.message, RESPONSE_CODE[:not_found])
-  #   end
+    rescue_from ActiveRecord::RecordNotFound do |e|
+      error!(e.message, RESPONSE_CODE[:not_found])
+    end
 
-  #   rescue_from Grape::Exceptions::ValidationErrors do |e|
-  #     error!(e.message, RESPONSE_CODE[:unprocessable_entity])
-  #   end
+    rescue_from Grape::Exceptions::ValidationErrors do |e|
+      error!(e.message, RESPONSE_CODE[:unprocessable_entity])
+    end
 
-  #   rescue_from Pundit::NotAuthorizedError do
-  #     error!(I18n.t('errors.not_authorized'), RESPONSE_CODE[:forbidden])
-  #   end
-  # end
+    # rescue_from Pundit::NotAuthorizedError do
+    #   error!(I18n.t('errors.not_authorized'), RESPONSE_CODE[:forbidden])
+    # end
+  end
 end

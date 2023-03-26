@@ -1,17 +1,15 @@
 require 'rails_helper'
+require 'support/shared_contexts/base'
 
 describe V1::Users do
-  let(:current_user) { create(:user) }
-  let(:current_user_token) { create(:user_token, user: current_user) }
-  let(:headers) { {'Authorization' => current_user_token.token} }
+  include_context 'base'
 
   describe 'GET /users' do
     context 'no params' do
       let(:users) { create_list :user, 3 }
 
       before do
-        @collection_ids = users.pluck(:id)
-
+        users
         get '/users', headers: headers
       end
 
@@ -49,6 +47,25 @@ describe V1::Users do
 
         expect(response.status).to eql 200
         expect(json['users'].pluck('username')).to eq %w[Abigail Brian Christina Esteban]
+      end
+    end
+
+    context 'check pagination' do
+      let(:users) { create_list :user, 15 }
+
+      before do
+        users
+        get '/users', params: {page: 1, per_page: 10}, headers: headers
+      end
+
+      it 'returns the proper attributes' do
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 200
+        expect(json['users'].size).to eql 10
+        expect(json['meta']['total_pages']).to eql 2
+        expect(json['meta']['current_page']).to eql 1
+        expect(json['meta']['users_count']).to eql 16
       end
     end
   end
@@ -118,20 +135,6 @@ describe V1::Users do
         expect(json['user']['username']).to eql body[:username]
         expect(json['user']['role']).to eql body[:role]
       end
-
-      # it 'create user if user authorization' do
-      #   body = { username: 'name', email: 'user@mail.com', password: '12345678Qq!' }
-
-      #   post '/users', params: body, headers: headers
-
-      #   json = JSON.parse(response.body)
-
-      #   expect(User.all.size).to eq(2)
-      #   expect(response.status).to eql 201
-      #   expect(json['user']['email']).to eql body[:email]
-      #   expect(json['user']['username']).to eql body[:username]
-      #   expect(json['user']['role']).to eql User::CUSTOMER
-      # end
     end
   end
 
