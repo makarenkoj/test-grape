@@ -17,3 +17,8 @@ Style/BlockComments:
 
 Style/HashSyntax:
   Enabled: false
+
+Layout/LineLength:
+  Max: 170
+  Exclude:
+    - db/**/*

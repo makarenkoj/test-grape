@@ -30,7 +30,7 @@ module V1
 
             present user, with: Entities::User, token: u_token.token
           else
-            error!(user.errors.messages)
+            error!(user.errors, success: false)
             return
           end
         end
@@ -45,10 +45,9 @@ module V1
           get do
             users = User.all
             pagy, users = pagy(users.order(:username),
-            page: params[:page], items: params[:per_page]
-          )
-  
-            present meta: {total_pages: pagy.pages, current_page: pagy.page, users_count: pagy.count}
+                               page: params[:page], items: params[:per_page])
+
+            present meta: { total_pages: pagy.pages, current_page: pagy.page, users_count: pagy.count }
             present users, with: Entities::Users::Index::User
           end
 

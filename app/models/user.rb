@@ -12,6 +12,7 @@ class User < ApplicationRecord
   PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,32}|(.*?[^\w\s])\z/
 
   has_many :user_tokens, dependent: :destroy
+  has_many :accommodations, dependent: :destroy
 
   validate :password_complexity
   validates :role, presence: true, inclusion: { in: ROLES.keys, message: I18n.t('errors.user.attributes.role') }

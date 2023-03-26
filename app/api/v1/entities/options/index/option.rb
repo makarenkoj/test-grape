@@ -6,9 +6,9 @@ module V1
           root 'options'
 
           expose :id,
-                :name,
-                :created_at,
-                :updated_at
+                 :name,
+                 :created_at,
+                 :updated_at
         end
       end
     end

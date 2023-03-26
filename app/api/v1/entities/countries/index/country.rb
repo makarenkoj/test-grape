@@ -9,7 +9,6 @@ module V1
                  :name,
                  :created_at,
                  :updated_at
-
         end
       end
     end

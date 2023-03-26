@@ -7,8 +7,6 @@ Test-grape
 
 * data base: postgresql
 
-* api documentation: 'http://localhost:3000/swagger#/'
-
 Step for starting api
 -
 
@@ -19,3 +17,5 @@ Step for starting api
 * bundle exec rails db:create db:migrate db:seed
 
 * rails s
+
+* api documentation: 'http://localhost:3000/swagger#/'

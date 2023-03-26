@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :country do
-    name { FFaker::Product.brand }
+    sequence(:name) { |n| "#{FFaker::Product.brand}#{n + 1}" }
 
     trait :with_city do
       after(:create) do |country, _evaluator|

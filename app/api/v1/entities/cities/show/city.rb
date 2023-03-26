@@ -10,7 +10,7 @@ module V1
                  :created_at,
                  :updated_at
 
-          expose :country, using: Entities::Country do |city, options|
+          expose :country, using: Entities::Country do |city, _options|
             city.country
           end
         end
