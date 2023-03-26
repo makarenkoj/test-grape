@@ -1,5 +1,3 @@
-# require 'devise/jwt/test_helpers'
-
 shared_context 'base' do
   let(:current_user) { create(:user) }
   let(:current_user_token) { create(:user_token, user: current_user) }
