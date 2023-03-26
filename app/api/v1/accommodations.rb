@@ -15,32 +15,47 @@ module V1
 
     resource :accommodations do
       namespace do
-        before { authenticate! }
-
-        desc 'Create accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:post]
+        desc 'Get accommodation list', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do
-          requires :title, type: String, desc: 'Accommodation title'
-          requires :type, type: String, desc: "Accommodation type: #{Accommodation::TYPES.keys.join('/')}"
-          requires :city_id, type: Integer, desc: 'City id'
-          requires :phone_number, type: String, desc: 'Accommodation phone number'
-          requires :address, type: String, desc: 'Accommodation address'
-          requires :price, type: Integer, desc: 'Accommodation price'
-          requires :room, type: Integer, desc: 'number of rooms in Accommodation'
-          optional :options_ids, type: Array, desc: 'Options ids for Accommodation'
+          use :pagination
         end
-        post do
-          if current_user.role == User::ADMIN
-            ActiveRecord::Base.transaction do
-              options_ids = params[:options_ids] && params.delete(:options_ids) if params.include?(:options_ids)
-              accommodation = current_user.accommodations.new(params)
-              accommodation.save!
-              options = options_ids&.map { |id| Option.find(id) }
-              accommodation.options << options unless options.blank?
-              present accommodation, with: Entities::Accommodation
+        get do
+          accommodations = Accommodation.all
+          pagy, accommodations = pagy(accommodations,
+                                      page: params[:page], items: params[:per_page])
+
+          present meta: { total_pages: pagy.pages, current_page: pagy.page, accommodations_count: pagy.count }
+          present accommodations, with: Entities::Accommodations::Index::Accommodation
+        end
+
+        namespace do
+          before { authenticate! }
+
+          desc 'Create accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:post]
+          params do
+            requires :title, type: String, desc: 'Accommodation title'
+            requires :type, type: String, desc: "Accommodation type: #{Accommodation::TYPES.keys.join('/')}"
+            requires :city_id, type: Integer, desc: 'City id'
+            requires :phone_number, type: String, desc: 'Accommodation phone number'
+            requires :address, type: String, desc: 'Accommodation address'
+            requires :price, type: Integer, desc: 'Accommodation price'
+            requires :room, type: Integer, desc: 'number of rooms in Accommodation'
+            optional :options_ids, type: Array, desc: 'Options ids for Accommodation'
+          end
+          post do
+            if current_user.role == User::ADMIN
+              ActiveRecord::Base.transaction do
+                options_ids = params[:options_ids] && params.delete(:options_ids) if params.include?(:options_ids)
+                accommodation = current_user.accommodations.new(params)
+                accommodation.save!
+                options = options_ids&.map { |id| Option.find(id) }
+                accommodation.options << options unless options.blank?
+                present accommodation, with: Entities::Accommodation
+              end
+            else
+              error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
+              return
             end
-          else
-            error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-            return
           end
         end
       end

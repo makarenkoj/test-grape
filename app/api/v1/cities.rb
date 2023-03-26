@@ -25,7 +25,7 @@ module V1
                               page: params[:page], items: params[:per_page])
 
           present meta: { total_pages: pagy.pages, current_page: pagy.page, city_count: pagy.count }
-          present cities, with: Entities::Cities::Index::City, total_amount: cities.size
+          present cities, with: Entities::Cities::Index::City
         end
 
         desc 'Get city', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:show]

@@ -6,11 +6,64 @@ describe V1::Accommodations do
 
   describe 'POST /accommodations' do
     context 'success' do
-      it 'create country' do
+      it 'returns the proper attributes' do
+        accommodations = create_list(:accommodation, 7)
+
+        get('/accommodations', headers: headers)
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 200
+        expect(json['accommodations'].size).to eql 7
+        json['accommodations'].last do |accommodation|
+          expect(accommodation['id']).to be_a Integer
+          expect(accommodation['city_id']).to be_a Integer
+          expect(accommodation['user_id']).to be_a Integer
+          expect(accommodation['title']).to be_a String
+          expect(accommodation['type']).to be_a String
+          expect(accommodation['phone_number']).to be_a String
+          expect(accommodation['address']).to be_a String
+          expect(accommodation['price']).to be_a Integer
+          expect(accommodation['room']).to be_a Integer
+          expect(accommodation['created_at']).to be_a String
+          expect(accommodation['updated_at']).to be_a String
+        end
+      end
+
+      it 'check pagination' do
+        accommodations = create_list(:accommodation, 17)
+
+        get('/accommodations', params: { page: 2, per_page: 10 }, headers: headers)
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 200
+        expect(json['accommodations'].size).to eql 7
+        expect(json['meta']['total_pages']).to eql 2
+        expect(json['meta']['current_page']).to eql 2
+        expect(json['meta']['accommodations_count']).to eql 17
+      end
+
+      it 'user unauthorization' do
+        accommodations = create_list(:accommodation, 17)
+
+        get('/accommodations', params: { page: 2, per_page: 10 }, headers: nil)
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 200
+        expect(json['accommodations'].size).to eql 7
+      end
+    end
+  end
+
+  describe 'POST /accommodations' do
+    context 'success' do
+      it 'create accommodation' do
         city = create(:city)
         options = create_list(:option, 5)
 
-        params = { 
+        params = {
           city_id: city.id,
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,
@@ -34,14 +87,14 @@ describe V1::Accommodations do
         expect(json['accommodation']['address']).to eql params[:address]
         expect(json['accommodation']['price']).to eql params[:price]
         expect(json['accommodation']['room']).to eql params[:room]
-        expect(json['accommodation']['options'].map{ |option| option['id'] }).to eql params[:options_ids]
+        expect(json['accommodation']['options'].map { |option| option['id'] }).to eql params[:options_ids]
       end
 
-      it 'create country' do
+      it 'create accommodation' do
         city = create(:city)
         options = create_list(:option, 5)
 
-        params = { 
+        params = {
           city_id: city.id,
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,
@@ -73,7 +126,7 @@ describe V1::Accommodations do
         city = create(:city)
         options = create_list(:option, 5)
 
-        params = { 
+        params = {
           city_id: city.id,
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,
@@ -96,7 +149,7 @@ describe V1::Accommodations do
         city = create(:city)
         options = create_list(:option, 5)
 
-        params = { 
+        params = {
           city_id: city.id,
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,
@@ -119,7 +172,7 @@ describe V1::Accommodations do
         city = create(:city)
         options = ['test']
 
-        params = { 
+        params = {
           city_id: city.id,
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,
@@ -141,7 +194,7 @@ describe V1::Accommodations do
       it 'broken city id' do
         options = create_list(:option, 5)
 
-        params = { 
+        params = {
           city_id: 'test',
           title: FFaker::Tweet.tweet,
           type: Accommodation::HOSTEL,

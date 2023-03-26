@@ -25,7 +25,7 @@ module V1
                                  page: params[:page], items: params[:per_page])
 
           present meta: { total_pages: pagy.pages, current_page: pagy.page, country_count: pagy.count }
-          present countries, with: Entities::Countries::Index::Country, total_amount: countries.size
+          present countries, with: Entities::Countries::Index::Country
         end
 
         desc 'Get country', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:show]
