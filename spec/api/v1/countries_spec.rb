@@ -10,7 +10,7 @@ describe V1::Countries do
 
       before do
         countries
-        get '/countries', headers: headers
+        get('/countries', headers: headers)
       end
 
       it 'returns the proper attributes' do
@@ -51,15 +51,15 @@ describe V1::Countries do
 
     context 'default sorting' do
       let(:country_1) { create :country, name: 'monaco' }
-      let(:country_2) { create :country, name: 'australia'  }
-      let(:country_3) { create :country, name: 'italy'  }
+      let(:country_2) { create :country, name: 'australia' }
+      let(:country_3) { create :country, name: 'italy' }
 
       before do
         country_1
         country_2
         country_3
 
-        get '/countries', headers: headers, params: {}
+        get('/countries', headers: headers, params: {})
       end
 
       it 'returns ordered countries' do
@@ -75,7 +75,7 @@ describe V1::Countries do
 
       before do
         countries
-        get '/countries', params: {page: 2, per_page: 10}, headers: headers
+        get('/countries', params: { page: 2, per_page: 10 }, headers: headers)
       end
 
       it 'returns the proper attributes' do
@@ -94,7 +94,7 @@ describe V1::Countries do
     context 'get country' do
       it 'get country' do
         country = create(:country, :with_city)
-        get "/countries/#{country.id}", headers: headers
+        get("/countries/#{country.id}", headers: headers)
 
         json = JSON.parse(response.body)
 
@@ -135,7 +135,7 @@ describe V1::Countries do
     context 'failure' do
       it 'create country if user authorization' do
         body = { name: 'ukraine' }
-        post '/countries', params: body, headers: nil
+        post('/countries', params: body, headers: nil)
 
         json = JSON.parse(response.body)
 
@@ -146,7 +146,7 @@ describe V1::Countries do
 
       it 'create country if customer user' do
         body = { name: 'ukraine' }
-        post '/countries', params: body, headers: headers
+        post('/countries', params: body, headers: headers)
 
         json = JSON.parse(response.body)
 
