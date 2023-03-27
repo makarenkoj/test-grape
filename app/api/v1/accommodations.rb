@@ -28,6 +28,16 @@ module V1
           present accommodations, with: Entities::Accommodations::Index::Accommodation
         end
 
+        desc 'Get accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:show]
+        params do
+          requires :id, type: String, desc: 'Accommodation id'
+        end
+        get ':id' do
+          accommodation = Accommodation.find(params[:id])
+
+          present accommodation, with: Entities::Accommodations::Show::Accommodation
+        end
+
         namespace do
           before { authenticate! }
 
@@ -52,6 +62,64 @@ module V1
                 accommodation.options << options unless options.blank?
                 present accommodation, with: Entities::Accommodation
               end
+            else
+              error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
+              return
+            end
+          end
+
+          desc 'Update accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:put]
+          params do
+            requires :id, type: String, desc: 'Accommodation id'
+            requires :title, type: String, desc: 'Accommodation title'
+            requires :type, type: String, desc: "Accommodation type: #{Accommodation::TYPES.keys.join('/')}"
+            requires :city_id, type: Integer, desc: 'City id'
+            requires :phone_number, type: String, desc: 'Accommodation phone number'
+            requires :address, type: String, desc: 'Accommodation address'
+            requires :price, type: Integer, desc: 'Accommodation price'
+            requires :room, type: Integer, desc: 'number of rooms in Accommodation'
+          end
+          put ':id' do
+            accommodation = Accommodation.find(params[:id])
+
+            if accommodation.user == current_user
+              accommodation.update(params)
+              present accommodation, with: Entities::Accommodation
+            else
+              error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
+              return
+            end
+          end
+
+          desc 'Delete accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:delete]
+          params do
+            requires :id, type: String, desc: 'Accommodation id'
+          end
+          delete ':id' do
+            accommodation = Accommodation.find(params[:id])
+
+            if accommodation.user == current_user
+              accommodation.destroy
+
+              RESPONSE_CODE[:ok]
+            else
+              error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
+            end
+          end
+
+          desc 'add options accommodation', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:put]
+          params do
+            requires :id, type: String, desc: 'Accommodation id'
+            requires :options_ids, type: Array, desc: 'Options ids for Accommodation'
+          end
+          put ':id/update_options' do
+            accommodation = Accommodation.find(params[:id])
+
+            if accommodation.user == current_user
+              options = params[:options_ids]&.map { |id| Option.find(id) }
+              options.each { |option| accommodation.options << option unless  accommodation.options.include?(option) }
+
+              present accommodation, with: Entities::Accommodation
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
               return

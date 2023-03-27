@@ -1,6 +1,10 @@
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Metrics/MethodLength:
+  Exclude:
+    - 'db/**/*'
+
 Metrics/AbcSize:
   Exclude:
     - 'bin/**/*'
@@ -17,6 +21,10 @@ Style/BlockComments:
 
 Style/HashSyntax:
   Enabled: false
+
+Style/StringLiterals:
+  Exclude:
+    - db/**/*
 
 Layout/LineLength:
   Max: 170

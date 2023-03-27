@@ -148,9 +148,9 @@ describe V1::Users do
         json = JSON.parse(response.body)
 
         expect(response.status).to eql 200
-        expect(json['email']).to eql body[:email]
-        expect(json['username']).to eql body[:username]
-        expect(json['role']).to eql current_user.role
+        expect(json['user']['email']).to eql body[:email]
+        expect(json['user']['username']).to eql body[:username]
+        expect(json['user']['role']).to eql current_user.role
       end
 
       it 'update password user' do
@@ -161,9 +161,9 @@ describe V1::Users do
         json = JSON.parse(response.body)
 
         expect(response.status).to eql 200
-        expect(json['email']).to eql current_user.email
-        expect(json['username']).to eql current_user.username
-        expect(json['role']).to eql current_user.role
+        expect(json['user']['email']).to eql current_user.email
+        expect(json['user']['username']).to eql current_user.username
+        expect(json['user']['role']).to eql current_user.role
       end
     end
 

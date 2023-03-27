@@ -77,8 +77,8 @@ module V1
             user = User.find(params[:id])
 
             if user == current_user
-              user.update!(params)
-              present user
+              user.update(params)
+              present user, with: Entities::User
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
               return
@@ -98,7 +98,6 @@ module V1
               RESPONSE_CODE[:ok]
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
         end
