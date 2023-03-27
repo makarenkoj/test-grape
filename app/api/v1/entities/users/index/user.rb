@@ -10,7 +10,7 @@ module V1
                  :username,
                  :role,
                  :created_at,
-                 :updated_at        
+                 :updated_at
         end
       end
     end

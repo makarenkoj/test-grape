@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :option do
-    name { FFaker::Vehicle.model }
+    sequence(:name) { |n| "#{FFaker::Vehicle.model}#{n + 1}" }
   end
 end
