@@ -6,7 +6,7 @@ module V1Base
       description: 'Authorization Token',
       required: true,
       # default: ''
-      default: Rails.env.development? ? User.first&.user_tokens&.last&.token : ''
+      default: Rails.env.development? ? User&.first&.user_tokens&.last&.token : ''
     }
   }.freeze
 
@@ -36,16 +36,9 @@ module V1Base
   class NotAllowedParams < ArgumentError; end
 
   included do
-    # helpers Pundit
     # helpers Helpers::SharedParams
-
-    # after { verify_authorized }
-
     format :json
-    # prefix :api
     default_format :json
-
-    # version 'v1'
 
     rescue_from V1Base::NotAllowedParams do |e|
       error!(e.message, RESPONSE_CODE[:unprocessable_entity])
@@ -66,9 +59,5 @@ module V1Base
     rescue_from Grape::Exceptions::ValidationErrors do |e|
       error!(e.message, RESPONSE_CODE[:unprocessable_entity])
     end
-
-    # rescue_from Pundit::NotAuthorizedError do
-    #   error!(I18n.t('errors.not_authorized'), RESPONSE_CODE[:forbidden])
-    # end
   end
 end

@@ -9,7 +9,7 @@ class User < ApplicationRecord
     ADMIN => ADMIN
   }.freeze
 
-  PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{10,32}|(.*?[^\w\s])\z/
+  PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}|(.*?[^\w\s])\z/
 
   has_many :user_tokens, dependent: :destroy
   has_many :accommodations, dependent: :destroy
