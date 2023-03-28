@@ -8,6 +8,7 @@ module V1
     mount V1::Cities
     mount V1::Options
     mount V1::Accommodations
+    mount V1::Bookings
 
     add_swagger_documentation(
       api_version: 'v1',

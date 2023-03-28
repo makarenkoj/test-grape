@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
   has_many :user_tokens, dependent: :destroy
   has_many :accommodations, dependent: :destroy
+  has_many :bookings, dependent: :destroy
 
   validate :password_complexity
   validates :role, presence: true, inclusion: { in: ROLES.keys, message: I18n.t('errors.user.attributes.role') }

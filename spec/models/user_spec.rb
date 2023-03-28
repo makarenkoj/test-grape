@@ -11,6 +11,8 @@ RSpec.describe User, type: :model, model: true do
 
   context 'associations' do
     it { should have_many(:user_tokens).dependent(:destroy) }
+    it { should have_many(:accommodations).dependent(:destroy) }
+    it { should have_many(:bookings).dependent(:destroy) }
   end
 
   describe 'validations' do

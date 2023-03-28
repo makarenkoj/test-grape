@@ -52,7 +52,6 @@ module V1
               present country, with: Entities::Country
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
         end
