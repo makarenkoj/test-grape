@@ -47,7 +47,7 @@ module V1
 
         desc 'Get booking', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:show]
         params do
-          requires :id, type: String, desc: 'Booking id'
+          requires :id, type: Integer, desc: 'Booking id'
         end
         get ':id' do
           booking = Booking.find(params[:id])
@@ -81,22 +81,27 @@ module V1
 
         desc 'Update booking', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:put]
         params do
+          requires :id, type: Integer, desc: 'Booking id'
           requires :start_date, type: Date, desc: 'Start booking'
           requires :end_date, type: Date, desc: 'End booking'
         end
         put ':id' do
-            
+          booking = Booking.find(params[:id])
+          return error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden]) unless current_user == booking.user || current_user.role == User::ADMIN
+
+          booking.update(params)
+          present booking, with: Entities::Bookings::Show::Booking
         end
 
         desc 'Delete booking', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:delete]
         params do
-          requires :id, type: String, desc: 'Booking id'
+          requires :id, type: Integer, desc: 'Booking id'
         end
         delete ':id' do
           booking = Booking.find(params[:id])
 
           return error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden]) unless current_user == booking.user || current_user.role == User::ADMIN
-          
+
           booking.destroy
           RESPONSE_CODE[:ok]
         end

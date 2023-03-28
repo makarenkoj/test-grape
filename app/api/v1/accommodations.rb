@@ -86,7 +86,6 @@ module V1
               present accommodation, with: Entities::Accommodation
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
 

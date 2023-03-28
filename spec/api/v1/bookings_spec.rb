@@ -265,6 +265,61 @@ describe V1::Bookings do
   end
 
   describe 'PUT /bookings/id' do
+    context 'success' do
+      it 'update booking' do
+        booking = create(:booking, user: current_user, start_date: Time.current, end_date: Time.current)
+
+        params = { start_date: Time.current + 1.days, end_date: Time.current + 2.days }
+
+        put("/bookings/#{booking.id}", params: params, headers: headers)
+
+        json = JSON.parse(response.body)
+        expect(response.status).to eql 200
+        expect(json['booking']['start_date'].to_date).to eql params[:start_date].to_date
+        expect(json['booking']['end_date'].to_date).to eql params[:end_date].to_date
+      end
+
+      it 'admin update booking' do
+        booking = create(:booking, user: current_user, start_date: Time.current, end_date: Time.current)
+
+        params = { start_date: Time.current + 1.days, end_date: Time.current + 2.days }
+
+        put("/bookings/#{booking.id}", params: params, headers: admin_headers)
+
+        json = JSON.parse(response.body)
+        expect(response.status).to eql 200
+        expect(json['booking']['start_date'].to_date).to eql params[:start_date].to_date
+        expect(json['booking']['end_date'].to_date).to eql params[:end_date].to_date
+      end
+    end
+
+    context 'failure' do
+      it "update someone else's booking" do
+        booking = create(:booking, start_date: Time.current, end_date: Time.current)
+
+        params = { start_date: Time.current + 1.days, end_date: Time.current + 2.days }
+
+        put("/bookings/#{booking.id}", params: params, headers: headers)
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 403
+        expect(json['error']).to eql I18n.t('errors.access_denied')
+      end
+
+      it 'unathorization user' do
+        booking = create(:booking, user: current_user, start_date: Time.current, end_date: Time.current)
+
+        params = { start_date: Time.current + 1.days, end_date: Time.current + 2.days }
+
+        put("/bookings/#{booking.id}", params: params, headers: nil)
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 401
+        expect(json['error']).to eql I18n.t('errors.not_authenticated')
+      end
+    end
   end
 
   describe 'DELETE /bookings/id' do
