@@ -40,11 +40,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_25_082749) do
 
   create_table "bookings", force: :cascade do |t|
     t.bigint "accommodation_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "start_date", null: false
     t.datetime "end_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["accommodation_id"], name: "index_bookings_on_accommodation_id"
+    t.index ["user_id"], name: "index_bookings_on_user_id"
   end
 
   create_table "cities", force: :cascade do |t|
@@ -95,6 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_25_082749) do
   add_foreign_key "accommodations", "cities"
   add_foreign_key "accommodations", "users"
   add_foreign_key "bookings", "accommodations"
+  add_foreign_key "bookings", "users"
   add_foreign_key "cities", "countries"
   add_foreign_key "user_tokens", "users"
 end

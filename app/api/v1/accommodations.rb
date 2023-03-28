@@ -64,7 +64,6 @@ module V1
               end
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
 

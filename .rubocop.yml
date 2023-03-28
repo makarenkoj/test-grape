@@ -27,6 +27,6 @@ Style/StringLiterals:
     - db/**/*
 
 Layout/LineLength:
-  Max: 170
+  Max: 190
   Exclude:
     - db/**/*
