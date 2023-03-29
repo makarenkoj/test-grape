@@ -2,6 +2,7 @@ module V1
   class Bookings < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     helpers do
       include Pagy::Backend
@@ -18,6 +19,7 @@ module V1
     resource :bookings do
       namespace do
         before { authenticate! }
+        before { snakerize }
 
         desc 'Get bookings list', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do

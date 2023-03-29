@@ -2,8 +2,11 @@ module V1
   class Tokens < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     resource :tokens do
+      before { snakerize }
+
       desc 'Decode JWT token, return user with session token', http_codes: [
         {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
       ]

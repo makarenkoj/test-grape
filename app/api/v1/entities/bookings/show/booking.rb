@@ -32,6 +32,31 @@ module V1
           expose :options, using: Entities::Option do |booking, _options|
             booking.accommodation.options
           end
+
+          # camel case format
+          expose :userId do |booking, _options|
+            booking.user_id
+          end
+
+          expose :accommodationId do |booking, _options|
+            booking.accommodation_id
+          end
+
+          expose :startDate do |booking, _options|
+            booking.start_date
+          end
+
+          expose :endDate do |booking, _options|
+            booking.end_date
+          end
+
+          expose :createdAt do |booking, _options|
+            booking.created_at
+          end
+
+          expose :updatedAt do |booking, _options|
+            booking.created_at
+          end
         end
       end
     end

@@ -2,58 +2,63 @@ module V1
   class Sessions < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     resource :sessions do
-      desc "Authenticate and return user's object with access token", http_codes: [
-        {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
-      ]
-      params do
-        optional :email, type: String, desc: 'User email'
-        optional :username, type: String, desc: 'Username'
-        requires :password, type: String, desc: 'User Password'
-      end
+      namespace do
+        before { snakerize }
 
-      post do
-        email = params[:email]
-        password = params[:password]
+        desc "Authenticate and return user's object with access token", http_codes: [
+          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
+        ]
+        params do
+          optional :email, type: String, desc: 'User email'
+          optional :username, type: String, desc: 'Username'
+          requires :password, type: String, desc: 'User Password'
+        end
 
-        error!(I18n.t('errors.session.invalid'), RESPONSE_CODE[:unauthorized]) if password.nil?
+        post do
+          email = params[:email]
+          password = params[:password]
 
-        user = User.find_by(email: email)
+          error!(I18n.t('errors.session.invalid'), RESPONSE_CODE[:unauthorized]) if password.nil?
 
-        error!(I18n.t('errors.session.invalid'), RESPONSE_CODE[:unauthorized]) if user.nil? || !user.valid_password?(password)
+          user = User.find_by(email: email)
 
-        u_token = user.login!
+          error!(I18n.t('errors.session.invalid'), RESPONSE_CODE[:unauthorized]) if user.nil? || !user.valid_password?(password)
 
-        present user, with: Entities::Users::Show::User, token: u_token.token
-      end
+          u_token = user.login!
 
-      desc 'Get current user with access token', headers: HEADERS_DOCS, http_codes: [
-        {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
-      ]
-      get do
-        authenticate!
+          present user, with: Entities::Users::Show::User, token: u_token.token
+        end
 
-        u_token = current_user.login!
+        desc 'Get current user with access token', headers: HEADERS_DOCS, http_codes: [
+          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
+        ]
+        get do
+          authenticate!
 
-        present current_user, with: Entities::Users::Show::User, token: u_token.token
-      end
+          u_token = current_user.login!
 
-      desc 'Destroy the access token', headers: HEADERS_DOCS, http_codes: [
-        {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid_token')}
-      ]
-      delete do
-        authenticate!
+          present current_user, with: Entities::Users::Show::User, token: u_token.token
+        end
 
-        auth_token = headers['Authorization']
-        user_token = UserToken.find_by(token: auth_token)
+        desc 'Destroy the access token', headers: HEADERS_DOCS, http_codes: [
+          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid_token')}
+        ]
+        delete do
+          authenticate!
 
-        if user_token.nil?
-          error!(I18n.t('errors.session.invalid_token'), RESPONSE_CODE[:unauthorized])
-        else
-          user_token.destroy
+          auth_token = headers['Authorization']
+          user_token = UserToken.find_by(token: auth_token)
 
-          present user_token.user, with: Entities::Users::Show::User
+          if user_token.nil?
+            error!(I18n.t('errors.session.invalid_token'), RESPONSE_CODE[:unauthorized])
+          else
+            user_token.destroy
+
+            present user_token.user, with: Entities::Users::Show::User
+          end
         end
       end
     end

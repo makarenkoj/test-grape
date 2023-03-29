@@ -17,7 +17,7 @@ module V1
       mount_path: '/api/v1/swagger_doc',
       hide_format: true,
       info: {
-        title: 'Laurus API',
+        title: 'test grape API',
         description: 'Documentation'
       }
     )

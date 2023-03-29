@@ -2,6 +2,7 @@ module V1
   class Options < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     helpers do
       include Pagy::Backend
@@ -13,6 +14,8 @@ module V1
 
     resource :options do
       namespace do
+        before { snakerize }
+
         desc 'Get options', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do
           use :pagination
@@ -40,7 +43,6 @@ module V1
               present option, with: Entities::Option
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
         end
