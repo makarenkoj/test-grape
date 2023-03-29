@@ -1,9 +1,10 @@
 require 'grape-swagger'
-# require 'validators/email'
 
 module V1
   class Base < Grape::API
     mount V1::Users
+    mount V1::Sessions
+    mount V1::Tokens
     mount V1::Countries
     mount V1::Cities
     mount V1::Options
@@ -22,6 +23,3 @@ module V1
     )
   end
 end
-
-# Dummy class to work ActiveAdmin
-# class Base; end

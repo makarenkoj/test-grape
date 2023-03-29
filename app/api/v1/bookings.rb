@@ -2,9 +2,7 @@ module V1
   class Bookings < Grape::API
     include V1Base
     include AuthenticateRequest
-    format :json
 
-    # helpers SharedParams
     helpers do
       include Pagy::Backend
       params :pagination do

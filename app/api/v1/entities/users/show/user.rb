@@ -12,7 +12,9 @@ module V1
                  :created_at,
                  :updated_at
 
-          # expose :accommodation, if: ->(instance, _options) { instance.admin? }, with: Entities::Accommodation::Show::Accommodation
+          expose :bookings, using: Entities::Bookings::Index::Booking do |user, _options|
+            user.bookings
+          end
 
           expose :token, if: ->(_instance, options) { options[:token] } do |_instance, options|
             options[:token]
