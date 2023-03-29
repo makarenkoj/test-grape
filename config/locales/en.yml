@@ -7,6 +7,7 @@ en:
     not_authenticated: Invalid token
     not_authorized: You are not authorized to perform this action
     something_went_wrong: Something went wrong
+    brocken_params: Brocken params
     jwt:
       token_expired: 'token has been expired'
       token_invalid: 'token is invalid'

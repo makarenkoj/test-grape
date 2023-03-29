@@ -1,18 +1,18 @@
 class AccommodationsFiltersService
   FILTERS_TABLES = {
-    options_ids: {
+    'options_ids' => {
       table: :options,
       field: :id,
       query: "options.id IN (select unnest(:value::int[]))",
       convertor: ->(val) { "{#{val.join(', ')}}" }
     },
-    cities_ids: {
+    'cities_ids' => {
       table: :cities,
       field: :id,
       query: "cities.id IN (select unnest(:value::int[]))",
       convertor: ->(val) { "{#{val.join(', ')}}" }
     },
-    countries_ids: {
+    'countries_ids' => {
       table: :countries,
       field: :id,
       query: "countries.id IN (select unnest(:value::int[]))",

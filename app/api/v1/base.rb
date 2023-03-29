@@ -10,6 +10,7 @@ module V1
     mount V1::Options
     mount V1::Accommodations
     mount V1::Bookings
+    mount V1::AccommodationsFilters
 
     add_swagger_documentation(
       api_version: 'v1',
