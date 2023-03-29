@@ -2,6 +2,7 @@ module V1
   class Cities < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     helpers do
       include Pagy::Backend
@@ -13,6 +14,8 @@ module V1
 
     resource :cities do
       namespace do
+        before { snakerize }
+
         desc 'Get city list', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do
           use :pagination
@@ -51,7 +54,6 @@ module V1
               present city, with: Entities::City
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
         end

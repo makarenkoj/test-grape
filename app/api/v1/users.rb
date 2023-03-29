@@ -2,6 +2,7 @@ module V1
   class Users < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     helpers do
       include Pagy::Backend
@@ -13,6 +14,8 @@ module V1
 
     resource :users do
       namespace do
+        before { snakerize }
+
         desc 'Create new user', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:post]
         params do
           requires :email, type: String, desc: 'User email'
@@ -29,7 +32,6 @@ module V1
             present user, with: Entities::User, token: u_token.token
           else
             error!(user.errors, success: false)
-            return
           end
         end
 
@@ -60,7 +62,6 @@ module V1
               present user, with: Entities::Users::Show::User
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
 
@@ -79,7 +80,6 @@ module V1
               present user, with: Entities::User
             else
               error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden])
-              return
             end
           end
 

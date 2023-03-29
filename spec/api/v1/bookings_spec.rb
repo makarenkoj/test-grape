@@ -229,6 +229,25 @@ describe V1::Bookings do
         expect(json['booking']['start_date'].to_date).to eql params[:start_date].to_date
         expect(json['booking']['end_date'].to_date).to eql params[:end_date].to_date
       end
+
+      # check snace_case camelCase params
+      it 'transformation params' do
+        accommodation = create(:accommodation, :with_option)
+        params = { accommodationId: accommodation.id,
+                   userId: current_user.id,
+                   startDate: Time.current + 1.days,
+                   endDate: Time.current + 3.days }
+
+        post '/bookings', params: params, headers: headers
+
+        json = JSON.parse(response.body)
+
+        expect(response.status).to eql 201
+        expect(json['booking']['accommodationId']).to eql params[:accommodationId]
+        expect(json['booking']['userId']).to eql params[:userId]
+        expect(json['booking']['startDate'].to_date).to eql params[:startDate].to_date
+        expect(json['booking']['endDate'].to_date).to eql params[:endDate].to_date
+      end
     end
 
     context 'failure' do

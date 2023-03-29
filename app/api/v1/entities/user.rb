@@ -10,6 +10,15 @@ module V1
              :updated_at,
              :role
 
+      # came case format
+      expose :createdAt do |user, _options|
+        user.created_at
+      end
+
+      expose :updatedAt do |user, _options|
+        user.created_at
+      end
+
       expose :token, if: ->(_instance, options) { options[:token] } do |_instance, options|
         options[:token]
       end

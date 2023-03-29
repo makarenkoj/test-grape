@@ -2,6 +2,7 @@ module V1
   class Countries < Grape::API
     include V1Base
     include AuthenticateRequest
+    include TransformationParams
 
     helpers do
       include Pagy::Backend
@@ -13,6 +14,8 @@ module V1
 
     resource :countries do
       namespace do
+        before { snakerize }
+
         desc 'Get country list', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do
           use :pagination
