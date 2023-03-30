@@ -47,7 +47,7 @@ RSpec.describe Booking, type: :model do
         it 'end day less than start' do
           expect do
             create(:booking, start_date: (Time.current + 5.days).to_date, end_date: (Time.current + 1.days).to_date)
-          end.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Datetime Start date cannot be greater than the end date")
+          end.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Datetime Start date cannot be greater than the end date')
         end
 
         it 'date blank' do

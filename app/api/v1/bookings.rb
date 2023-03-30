@@ -28,18 +28,18 @@ module V1
           optional :accommodation_id, type: Integer, desc: 'Accommodation id'
         end
         get do
-          if current_user.role == User::ADMIN && params[:user_id].present?
-            user = User.find(params[:user_id])
-          elsif current_user == User.find_by(id: params[:user_id])
-            user = current_user
-          else
-            user = current_user.role == User::ADMIN ? nil : current_user
-          end
+          user = if current_user.role == User::ADMIN && params[:user_id].present?
+                   User.find(params[:user_id])
+                 elsif current_user == User.find_by(id: params[:user_id])
+                   current_user
+                 else
+                   current_user.role == User::ADMIN ? nil : current_user
+                 end
 
           accommodation = params[:accommodation_id].present? ? Accommodation.find(params[:accommodation_id]) : nil
 
           pagy, bookings = pagy(BookingsService.call(user_id: user&.id, accommodation_id: accommodation&.id),
-                                                     page: params[:page], items: params[:per_page])
+                                page: params[:page], items: params[:per_page])
 
           present meta: { total_pages: pagy.pages, current_page: pagy.page, bookings_count: pagy.count }
           present bookings, with: Entities::Bookings::Index::Booking
@@ -68,7 +68,7 @@ module V1
           user = User.find(params[:user_id])
           accommodation = Accommodation.find(params[:accommodation_id])
 
-          return error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden]) if !access_denied?(user, accommodation)
+          return error!(I18n.t('errors.access_denied'), RESPONSE_CODE[:forbidden]) unless access_denied?(user, accommodation)
 
           booking = user.bookings.new(params)
 

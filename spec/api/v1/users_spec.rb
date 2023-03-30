@@ -29,15 +29,15 @@ describe V1::Users do
     end
 
     context 'default sorting' do
-      let(:user_1) { create :user }
-      let(:user_2) { create :user }
-      let(:user_3) { create :user }
+      let(:user1) { create :user }
+      let(:user2) { create :user }
+      let(:user3) { create :user }
 
       before do
         current_user.update_column(:username, 'Esteban')
-        user_1.update_column(:username, 'Brian')
-        user_2.update_column(:username, 'Abigail')
-        user_3.update_column(:username, 'Christina')
+        user1.update_column(:username, 'Brian')
+        user2.update_column(:username, 'Abigail')
+        user3.update_column(:username, 'Christina')
 
         get '/users', headers: headers, params: {}
       end
@@ -55,7 +55,7 @@ describe V1::Users do
 
       before do
         users
-        get '/users', params: {page: 1, per_page: 10}, headers: headers
+        get '/users', params: { page: 1, per_page: 10 }, headers: headers
       end
 
       it 'returns the proper attributes' do
@@ -141,7 +141,7 @@ describe V1::Users do
   describe 'PUT /users/:id' do
     context 'success' do
       it 'update user' do
-        body = {email: 'new@test.com', username: 'newname'}
+        body = { email: 'new@test.com', username: 'newname' }
 
         put "/users/#{current_user.id}", params: body, headers: headers
 
@@ -154,7 +154,7 @@ describe V1::Users do
       end
 
       it 'update password user' do
-        body = {password: '123Password!'}
+        body = { password: '123Password!' }
 
         put "/users/#{current_user.id}", params: body, headers: headers
 
@@ -169,7 +169,7 @@ describe V1::Users do
 
     context 'failure' do
       it 'user not authorize' do
-        body = {email: 'new@test.com', username: 'newname'}
+        body = { email: 'new@test.com', username: 'newname' }
 
         put "/users/#{current_user.id}", params: body, headers: nil
 
@@ -181,7 +181,7 @@ describe V1::Users do
 
       it 'update another user' do
         user = create :user
-        body = {email: 'new@test.com', username: 'newname'}
+        body = { email: 'new@test.com', username: 'newname' }
 
         put "/users/#{user.id}", params: body, headers: headers
 

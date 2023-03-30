@@ -50,14 +50,14 @@ describe V1::Cities do
     end
 
     context 'default sorting' do
-      let(:city_1) { create :city, name: 'sydney' }
-      let(:city_2) { create :city, name: 'kyiv' }
-      let(:city_3) { create :city, name: 'milan' }
+      let(:city1) { create :city, name: 'sydney' }
+      let(:city2) { create :city, name: 'kyiv' }
+      let(:city3) { create :city, name: 'milan' }
 
       before do
-        city_1
-        city_2
-        city_3
+        city1
+        city2
+        city3
 
         get('/cities', headers:, params: {})
       end

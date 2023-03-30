@@ -8,7 +8,7 @@ module V1
       before { snakerize }
 
       desc 'Decode JWT token, return user with session token', http_codes: [
-        {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
+        { code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid') }
       ]
       params do
         requires :token, type: String, desc: 'JWT Token'

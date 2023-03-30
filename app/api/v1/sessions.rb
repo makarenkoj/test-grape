@@ -9,7 +9,7 @@ module V1
         before { snakerize }
 
         desc "Authenticate and return user's object with access token", http_codes: [
-          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
+          { code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid') }
         ]
         params do
           optional :email, type: String, desc: 'User email'
@@ -33,7 +33,7 @@ module V1
         end
 
         desc 'Get current user with access token', headers: HEADERS_DOCS, http_codes: [
-          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid')}
+          { code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid') }
         ]
         get do
           authenticate!
@@ -44,7 +44,7 @@ module V1
         end
 
         desc 'Destroy the access token', headers: HEADERS_DOCS, http_codes: [
-          {code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid_token')}
+          { code: RESPONSE_CODE[:unauthorized], message: I18n.t('errors.session.invalid_token') }
         ]
         delete do
           authenticate!

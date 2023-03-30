@@ -1,4 +1,5 @@
 module V1
+  # rubocop:disable Metrics/ClassLength
   class Accommodations < Grape::API
     include V1Base
     include AuthenticateRequest
@@ -116,7 +117,7 @@ module V1
 
             if accommodation.user == current_user
               options = params[:options_ids]&.map { |id| Option.find(id) }
-              options.each { |option| accommodation.options << option unless  accommodation.options.include?(option) }
+              options.each { |option| accommodation.options << option unless accommodation.options.include?(option) }
 
               present accommodation, with: Entities::Accommodation
             else
@@ -127,4 +128,6 @@ module V1
       end
     end
   end
+
+  # rubocop:enable Metrics/ClassLength
 end

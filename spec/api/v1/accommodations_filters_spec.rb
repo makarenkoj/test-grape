@@ -38,7 +38,7 @@ describe V1::AccommodationsFilters do
 
       it 'use all filters filters' do
         params = { countries_ids: [country1.id],
-                   options_ids: [option1.id], 
+                   options_ids: [option1.id],
                    cities_ids: [city1.id] }
 
         get('/accommodations_filters', params: params, headers: headers)
@@ -77,7 +77,7 @@ describe V1::AccommodationsFilters do
       end
 
       it 'return with out filters' do
-        params = { }
+        params = {}
 
         get('/accommodations_filters', params: params, headers: headers)
 

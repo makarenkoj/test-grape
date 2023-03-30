@@ -22,25 +22,26 @@ describe AccommodationsFiltersService do
     let!(:accommodation_option) { create(:accommodation_option, option: option1, accommodation: accommodation1) }
 
     it 'return with country filters' do
-      expect(AccommodationsFiltersService.call(filters: {'countries_ids' => [country1.id, country3.id]})).to include(accommodation1, accommodation3)
-      expect(AccommodationsFiltersService.call(filters: {'countries_ids' => [country2.id]})).to include(accommodation2)
+      expect(AccommodationsFiltersService.call(filters: { 'countries_ids' => [country1.id, country3.id] })).to include(accommodation1, accommodation3)
+      expect(AccommodationsFiltersService.call(filters: { 'countries_ids' => [country2.id] })).to include(accommodation2)
     end
 
     it 'return with city filters' do
-      expect(AccommodationsFiltersService.call(filters: {'cities_ids' => [city3.id, city2.id]})).to include(accommodation2, accommodation3)
-      expect(AccommodationsFiltersService.call(filters: {'cities_ids' => [city1.id]})).to include(accommodation1)
+      expect(AccommodationsFiltersService.call(filters: { 'cities_ids' => [city3.id, city2.id] })).to include(accommodation2, accommodation3)
+      expect(AccommodationsFiltersService.call(filters: { 'cities_ids' => [city1.id] })).to include(accommodation1)
     end
 
     it 'return with option filters' do
-      expect(AccommodationsFiltersService.call(filters: {'options_ids' => [accommodation2.options.last.id, accommodation3.options.last.id]})).to include(accommodation2, accommodation3)
-      expect(AccommodationsFiltersService.call(filters: {'options_ids' => [option1.id]})).to include(accommodation1)
-      expect(AccommodationsFiltersService.call(filters: {'options_ids' => [option2.id]}).size).to eql 0
+      expect(AccommodationsFiltersService.call(filters: { 'options_ids' => [accommodation2.options.last.id, accommodation3.options.last.id] })).to include(accommodation2, accommodation3)
+      expect(AccommodationsFiltersService.call(filters: { 'options_ids' => [option1.id] })).to include(accommodation1)
+      expect(AccommodationsFiltersService.call(filters: { 'options_ids' => [option2.id] }).size).to eql 0
     end
 
     it 'use all filters filters' do
-      expect(AccommodationsFiltersService.call(filters: {'countries_ids' => [country1.id], 'options_ids' => [option1.id], 'cities_ids' => [city1.id]})).to include(accommodation1)
-      expect(AccommodationsFiltersService.call(filters: {'countries_ids'=> [country2.id], 'options_ids' => [accommodation2.options.last.id], 'cities_ids' => [city2.id]})).to include(accommodation2)
-      expect(AccommodationsFiltersService.call(filters: {'countries_ids' => [country1.id], 'options_ids' => [option1.id], 'cities_ids' => [city2.id]}).size).to eql 0
+      expect(AccommodationsFiltersService.call(filters: { 'countries_ids' => [country1.id], 'options_ids' => [option1.id], 'cities_ids' => [city1.id] })).to include(accommodation1)
+      expect(AccommodationsFiltersService.call(filters: { 'countries_ids' => [country2.id], 'options_ids' => [accommodation2.options.last.id],
+                                                          'cities_ids' => [city2.id] })).to include(accommodation2)
+      expect(AccommodationsFiltersService.call(filters: { 'countries_ids' => [country1.id], 'options_ids' => [option1.id], 'cities_ids' => [city2.id] }).size).to eql 0
     end
 
     it 'without filters filters' do

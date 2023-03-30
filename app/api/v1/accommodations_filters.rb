@@ -17,7 +17,7 @@ module V1
         before { authenticate! }
         before { snakerize }
 
-        desc 'Filters accommodation list', headers: HEADERS_DOCS#, http_codes: HTTP_CODES[:get_index]
+        desc 'Filters accommodation list', headers: HEADERS_DOCS, http_codes: HTTP_CODES[:get_index]
         params do
           use :pagination
           optional :options_ids, type: Array, desc: 'Options ids for Accommodation'
@@ -27,13 +27,13 @@ module V1
         get do
           accommodations = AccommodationsFiltersService.call(filters: params)
           pagy, accommodations = pagy(accommodations,
-                                            page: params[:page], items: params[:per_page])
+                                      page: params[:page], items: params[:per_page])
 
           present meta: { total_pages: pagy.pages, current_page: pagy.page, accommodations_count: pagy.count }
           present accommodations, with: Entities::Accommodations::Index::Accommodation
 
-          rescue ActiveRecord::StatementInvalid => _e
-            error!(I18n.t('errors.brocken_params'), RESPONSE_CODE[:bad_request])
+        rescue ActiveRecord::StatementInvalid => _e
+          error!(I18n.t('errors.brocken_params'), RESPONSE_CODE[:bad_request])
         end
       end
     end

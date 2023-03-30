@@ -15,7 +15,7 @@ password = '12345678Qq!'
 if Rails.env.development?
   puts 'Creating customer'
 
-  3.times do |i|
+  3.times do |_i|
     User.create!(username: FFaker::Name.first_name,
                  email: FFaker::Internet.unique.email,
                  password: password,
@@ -24,7 +24,7 @@ if Rails.env.development?
 
   puts 'Creating admin'
 
-  2.times do |i|
+  2.times do |_i|
     User.create!(username: FFaker::Name.first_name,
                  email: FFaker::Internet.unique.email,
                  password: password,

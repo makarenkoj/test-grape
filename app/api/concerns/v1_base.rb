@@ -12,24 +12,24 @@ module V1Base
 
   HTTP_CODES = {
     get_index: [
-      {code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden')}
+      { code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden') }
     ],
     get_show: [
-      {code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found')},
-      {code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden')}
+      { code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found') },
+      { code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden') }
     ],
     post: [
-      {code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden')},
-      {code: RESPONSE_CODE[:unprocessable_entity], message: 'Detail error messages'}
+      { code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden') },
+      { code: RESPONSE_CODE[:unprocessable_entity], message: 'Detail error messages' }
     ],
     put: [
-      {code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden')},
-      {code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found')},
-      {code: RESPONSE_CODE[:unprocessable_entity], message: 'Validation error messages'}
+      { code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden') },
+      { code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found') },
+      { code: RESPONSE_CODE[:unprocessable_entity], message: 'Validation error messages' }
     ],
     delete: [
-      {code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found')},
-      {code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden')}
+      { code: RESPONSE_CODE[:not_found], message: I18n.t('errors.not_found') },
+      { code: RESPONSE_CODE[:forbidden], message: I18n.t('errors.forbidden') }
     ]
   }.freeze
 

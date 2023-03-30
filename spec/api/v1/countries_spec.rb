@@ -50,14 +50,14 @@ describe V1::Countries do
     end
 
     context 'default sorting' do
-      let(:country_1) { create :country, name: 'monaco' }
-      let(:country_2) { create :country, name: 'australia' }
-      let(:country_3) { create :country, name: 'italy' }
+      let(:country1) { create :country, name: 'monaco' }
+      let(:country2) { create :country, name: 'australia' }
+      let(:country3) { create :country, name: 'italy' }
 
       before do
-        country_1
-        country_2
-        country_3
+        country1
+        country2
+        country3
 
         get('/countries', headers: headers, params: {})
       end
